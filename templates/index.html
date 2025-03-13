@@ -1,0 +1,182 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div x-data="{ searchQuery: '' }" class="fade-in">
+    <div class="flex flex-col md:flex-row justify-between items-center mb-8">
+        <h1 class="text-3xl font-bold text-gray-800">My Courses</h1>
+        <div class="mt-4 md:mt-0 flex items-center gap-4">
+            <div class="relative">
+                <input 
+                    type="text" 
+                    x-model="searchQuery" 
+                    placeholder="Search courses..." 
+                    class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                >
+                <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+            </div>
+            <button id="qrButton" onclick="showQRCode()" class="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg transition flex items-center">
+                <i class="fas fa-qrcode mr-2"></i> Mobile Access
+            </button>
+        </div>
+    </div>
+    
+    {% if courses %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for course in courses %}
+                <div 
+                    class="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm hover:shadow-md card-hover course-card"
+                    x-show="searchQuery === '' || '{{ course.name }}'.toLowerCase().includes(searchQuery.toLowerCase()) || '{{ course.code }}'.toLowerCase().includes(searchQuery.toLowerCase())"
+                >
+                    <div class="border-l-4 border-primary-500 pl-4 py-3 bg-gray-50 flex justify-between">
+                        <div>
+                            <h2 class="text-xl font-semibold course-name">{{ course.name }}</h2>
+                            <p class="text-gray-500 text-sm course-code">{{ course.code }}</p>
+                        </div>
+                        <div class="flex items-start pr-4">
+                            <form action="/delete/course/{{ course.id }}" method="post" onsubmit="return confirm('Are you sure you want to delete this course?');">
+                                <button type="submit" class="text-gray-400 hover:text-red-500 transition">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="p-5">
+                        <div class="flex justify-between items-center mb-4">
+                            <div class="flex items-center">
+                                <i class="fas fa-book text-primary-500 mr-2"></i>
+                                <span class="text-gray-600">{{ course.weeks|length }} weeks</span>
+                            </div>
+                            <div class="bg-primary-50 text-primary-700 px-2 py-1 rounded-full text-xs">
+                                {% if course.weeks|length > 0 %}Active{% else %}New{% endif %}
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <div class="flex">
+                                {% if course.weeks|length > 0 %}
+                                <div class="flex -space-x-2">
+                                    {% for week in course.weeks[:3] %}
+                                        <div class="w-8 h-8 rounded-full bg-gradient-to-br from-primary-300 to-primary-500 flex items-center justify-center text-white text-xs border-2 border-white">
+                                            W{{ loop.index }}
+                                        </div>
+                                    {% endfor %}
+                                    {% if course.weeks|length > 3 %}
+                                        <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 text-xs border-2 border-white">
+                                            +{{ course.weeks|length - 3 }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                {% else %}
+                                <span class="text-gray-400 text-sm italic">No weeks added yet</span>
+                                {% endif %}
+                            </div>
+                            <a href="/course/{{ course.id }}" class="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg transition flex items-center">
+                                <span>View</span>
+                                <i class="fas fa-chevron-right ml-2 text-xs"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="bg-white rounded-lg border border-gray-200 p-8 text-center">
+            <div class="w-20 h-20 bg-primary-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-book text-primary-500 text-2xl"></i>
+            </div>
+            <h2 class="text-2xl font-semibold text-gray-800 mb-2">No courses yet</h2>
+            <p class="text-gray-500 mb-6">Start organizing your university courses by adding your first course</p>
+            <a href="/courses" class="bg-primary-600 hover:bg-primary-700 text-white px-6 py-3 rounded-lg inline-flex items-center transition">
+                <i class="fas fa-plus-circle mr-2"></i>
+                <span>Add Your First Course</span>
+            </a>
+        </div>
+    {% endif %}
+
+    <div class="mt-8 border-t border-gray-200 pt-8">
+        <h2 class="text-xl font-semibold text-gray-800 mb-6">Quick Tips & Advice</h2>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div class="bg-blue-50 p-4 rounded-lg">
+                <div class="flex items-center mb-3">
+                    <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-500 mr-3">
+                        <i class="fas fa-folder-tree"></i>
+                    </div>
+                    <h3 class="font-medium text-gray-800">Stay Organized</h3>
+                </div>
+                <p class="text-gray-600 text-sm">Create separate weeks for different topics and keep materials well categorized.</p>
+            </div>
+            
+            <div class="bg-green-50 p-4 rounded-lg">
+                <div class="flex items-center mb-3">
+                    <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center text-green-500 mr-3">
+                        <i class="fas fa-file-arrow-up"></i>
+                    </div>
+                    <h3 class="font-medium text-gray-800">Regular Updates</h3>
+                </div>
+                <p class="text-gray-600 text-sm">Upload materials right after each class to maintain an up-to-date repository.</p>
+            </div>
+            
+            <div class="bg-purple-50 p-4 rounded-lg">
+                <div class="flex items-center mb-3">
+                    <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center text-purple-500 mr-3">
+                        <i class="fas fa-tags"></i>
+                    </div>
+                    <h3 class="font-medium text-gray-800">Clear Labeling</h3>
+                </div>
+                <p class="text-gray-600 text-sm">Use descriptive names and proper material types for easy navigation.</p>
+            </div>
+            
+            <div class="bg-orange-50 p-4 rounded-lg">
+                <div class="flex items-center mb-3">
+                    <div class="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center text-orange-500 mr-3">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <h3 class="font-medium text-gray-800">Time Management</h3>
+                </div>
+                <p class="text-gray-600 text-sm">Keep track of assignments and lectures by organizing them weekly.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="qrModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
+        <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+            <div class="mt-3 text-center">
+                <h3 class="text-lg leading-6 font-medium text-gray-900">Scan QR Code</h3>
+                <div class="mt-2 px-7 py-3">
+                    <p class="text-sm text-gray-500">Scan this QR code with your mobile device to access the course organizer</p>
+                    <div id="qrcode" class="mt-4 flex justify-center"></div>
+                </div>
+                <div class="items-center px-4 py-3">
+                    <button id="closeModal" class="px-4 py-2 bg-gray-500 text-white text-base font-medium rounded-md shadow-sm hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-300">
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function isMobileDevice() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        }
+        
+        // Hide QR button on mobile
+        window.onload = function() {
+            if (isMobileDevice()) {
+                document.getElementById('qrButton').style.display = 'none';
+            }
+        }
+        function showQRCode() {
+            fetch('/generate-qr')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('qrcode').innerHTML = `<img src="data:image/png;base64,${data.qr_code}" alt="QR Code">`;
+                    document.getElementById('qrModal').classList.remove('hidden');
+                });
+        }
+
+        document.getElementById('closeModal').onclick = function() {
+            document.getElementById('qrModal').classList.add('hidden');
+        }
+    </script>
+</div>
+{% endblock %}

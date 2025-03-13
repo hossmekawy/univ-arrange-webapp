@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#4F46E5">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+
+    <title>Mekawy UI 2025 | Course Organizer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.10.2/cdn.min.js" defer></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter var', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .animate-pulse-slow {
+            animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out forwards;
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col">
+    <nav class="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-10">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <a href="/" class="flex items-center">
+                        <span class="text-primary-600 text-2xl font-bold">Mekawy<span class="text-gray-800">UI</span></span>
+                        <span class="ml-1 bg-primary-600 text-white text-xs px-1.5 py-0.5 rounded">2025</span>
+                    </a>
+                </div>
+                <div class="hidden md:flex items-center space-x-4">
+                    <a href="/" class="px-3 py-2 text-gray-700 hover:text-primary-600 rounded-md text-sm font-medium flex items-center">
+                        <i class="fas fa-home mr-2"></i> Home
+                    </a>
+                    <a href="/courses" class="px-3 py-2 text-gray-700 hover:text-primary-600 rounded-md text-sm font-medium flex items-center">
+                        <i class="fas fa-plus-circle mr-2"></i> Add Course
+                    </a>
+                </div>
+                <div class="md:hidden flex items-center" x-data="{ open: false }">
+                    <button @click="open = !open" class="text-gray-500 hover:text-primary-600 focus:outline-none">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                    <div x-show="open" @click.away="open = false" class="absolute top-16 right-0 w-48 bg-white border border-gray-200 rounded-md shadow-lg py-1 mt-2" x-cloak>
+                        <a href="/" class="block px-4 py-2 text-gray-700 hover:bg-primary-50 hover:text-primary-600">
+                            <i class="fas fa-home mr-2"></i> Home
+                        </a>
+                        <a href="/courses" class="block px-4 py-2 text-gray-700 hover:bg-primary-50 hover:text-primary-600">
+                            <i class="fas fa-plus-circle mr-2"></i> Add Course
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <main class="container mx-auto py-8 px-4 flex-grow">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="bg-white border-t border-gray-200 py-6 mt-auto">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="flex items-center mb-4 md:mb-0">
+                    <span class="text-primary-600 font-bold">Mekawy<span class="text-gray-800">UI</span></span>
+                    <span class="ml-1 bg-primary-600 text-white text-xs px-1.5 py-0.5 rounded">2025</span>
+                </div>
+                <p class="text-gray-500 text-sm">&copy; 2025 University Course Organizer by Hussein El Mekawy</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

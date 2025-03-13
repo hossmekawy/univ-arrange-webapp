@@ -1,0 +1,233 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="fade-in" x-data="{ showUploadForm: false, materialType: 'All' }">
+    <div class="bg-white shadow-sm rounded-lg overflow-hidden border border-gray-200">
+        <div class="bg-primary-50 p-6 border-b border-primary-100">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center">
+                <div class="mb-4 md:mb-0">
+                    <div class="flex items-center mb-1">
+                        <a href="/course/{{ course.id }}" class="text-primary-600 hover:text-primary-700 mr-2">
+                            {{ course.name }}
+                        </a>
+                        <i class="fas fa-chevron-right text-gray-400 mx-2 text-sm"></i>
+                        <span class="text-gray-600">Week {{ week.number }}</span>
+                    </div>
+                    <h1 class="text-2xl font-bold text-gray-800">{{ week.title }}</h1>
+                </div>
+                <div class="flex space-x-2">
+                    <a href="/course/{{ course.id }}" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg transition flex items-center">
+                        <i class="fas fa-arrow-left mr-2"></i> Back
+                    </a>
+                    <button @click="showUploadForm = !showUploadForm" class="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg transition flex items-center">
+                        <i class="fas fa-upload mr-2"></i> Upload
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div x-show="showUploadForm" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" class="p-6 bg-gray-50 border-b border-gray-200">
+            <h2 class="text-lg font-semibold text-gray-800 mb-4">Upload Material</h2>
+            <form action="/course/{{ course.id }}/week/{{ week.id }}/upload" method="post" enctype="multipart/form-data" class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="material_name" class="block text-gray-700 font-medium mb-2">Material Name</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-file-alt text-gray-400"></i>
+                            </div>
+                            <input type="text" id="material_name" name="material_name" required
+                                   class="pl-10 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="material_type" class="block text-gray-700 font-medium mb-2">Material Type</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-tag text-gray-400"></i>
+                            </div>
+                            <select id="material_type" name="material_type" required
+                                    class="pl-10 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 appearance-none">
+                                <option value="Lecture">Lecture</option>
+                                <option value="Assignment">Assignment</option>
+                                <option value="PDF">PDF</option>
+                                <option value="Word Document">Word Document</option>
+                                <option value="Notes">Notes</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                <i class="fas fa-chevron-down text-gray-400"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="drop-area" class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center cursor-pointer hover:bg-gray-50 transition">
+                    <input type="file" id="file" name="file" required class="hidden">
+                    <div class="flex flex-col items-center">
+                        <i class="fas fa-cloud-upload-alt text-4xl text-primary-500 mb-4"></i>
+                        <p class="text-gray-600 mb-2">Drag and drop your file here or click to browse</p>
+                        <p id="filename-display" class="text-primary-600 font-medium">No file selected</p>
+                        <button type="button" onclick="document.getElementById('file').click()" class="mt-4 bg-primary-100 hover:bg-primary-200 text-primary-700 px-4 py-2 rounded-lg transition text-sm">
+                            Select File
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="flex justify-end space-x-2">
+                    <button type="button" @click="showUploadForm = false" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg transition">
+                        Cancel
+                    </button>
+                    <button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg transition">
+                        <i class="fas fa-upload mr-2"></i> Upload Material
+                    </button>
+                </div>
+            </form>
+        </div>
+        
+        <div class="p-6">
+            {% if week.materials %}
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+                    <h2 class="text-xl font-semibold text-gray-800 mb-2 md:mb-0">Materials ({{ week.materials|length }})</h2>
+                    <div class="flex space-x-2">
+                        <select x-model="materialType" class="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                            <option value="All">All Types</option>
+                            <option value="Lecture">Lectures</option>
+                            <option value="Assignment">Assignments</option>
+                            <option value="PDF">PDFs</option>
+                            <option value="Word Document">Word Documents</option>
+                            <option value="Notes">Notes</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {% for material in week.materials %}
+                        <div class="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-md transition card-hover"
+                             x-show="materialType === 'All' || materialType === '{{ material.type }}'">
+                            <div class="p-4">
+                                <div class="flex items-start justify-between mb-3">
+                                    <div class="flex items-center">
+                                        {% if material.type == 'Lecture' %}
+                                            <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-500 mr-3">
+                                                <i class="fas fa-video"></i>
+                                            </div>
+                                        {% elif material.type == 'Assignment' %}
+                                            <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center text-red-500 mr-3">
+                                                <i class="fas fa-tasks"></i>
+                                            </div>
+                                        {% elif material.type == 'PDF' %}
+                                            <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-500 mr-3">
+                                                <i class="fas fa-file-pdf"></i>
+                                            </div>
+                                        {% elif material.type == 'Word Document' %}
+                                            <div class="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center text-purple-500 mr-3">
+                                                <i class="fas fa-file-word"></i>
+                                            </div>
+                                        {% elif material.type == 'Notes' %}
+                                            <div class="w-10 h-10 rounded-full bg-yellow-100 flex items-center justify-center text-yellow-500 mr-3">
+                                                <i class="fas fa-sticky-note"></i>
+                                            </div>
+                                        {% else %}
+                                            <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 mr-3">
+                                                <i class="fas fa-file"></i>
+                                            </div>
+                                        {% endif %}
+                                        <div>
+                                            <h3 class="font-medium text-gray-800 truncate max-w-xs">{{ material.name }}</h3>
+                                            <p class="text-xs text-gray-500">{{ material.filename }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex space-x-1">
+                                        <div class="px-2 py-1 bg-primary-50 text-primary-700 text-xs rounded-full">
+                                            {{ material.type }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex justify-between items-center mt-4">
+                                    <div class="flex space-x-2">
+                                        <a href="/download/{{ material.path }}" class="bg-primary-50 hover:bg-primary-100 text-primary-700 px-3 py-1 rounded-lg transition text-sm flex items-center">
+                                            <i class="fas fa-download mr-1"></i> Download
+                                        </a>
+                                        <a href="/download/{{ material.path }}" target="_blank" class="bg-green-50 hover:bg-green-100 text-green-700 px-3 py-1 rounded-lg transition text-sm flex items-center">
+                                            <i class="fas fa-eye mr-1"></i> View
+                                        </a>
+                                    </div>
+                                    <form action="/delete/material/{{ course.id }}/{{ week.id }}/{{ material.id }}" method="post"
+                                          onsubmit="return confirm('Are you sure you want to delete this material?');">
+                                        <button type="submit" class="bg-gray-50 hover:bg-gray-100 text-gray-700 px-3 py-1 rounded-lg transition text-sm flex items-center">
+                                            <i class="fas fa-trash mr-1"></i> Delete
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="p-8 text-center">
+                    <div class="w-20 h-20 bg-primary-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-file-alt text-primary-500 text-2xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-2">No materials uploaded yet</h2>
+                    <p class="text-gray-500 mb-6">Start uploading your course materials</p>
+                    <button @click="showUploadForm = true" class="bg-primary-600 hover:bg-primary-700 text-white px-6 py-3 rounded-lg inline-flex items-center transition">
+                        <i class="fas fa-upload mr-2"></i>
+                        <span>Upload Your First Material</span>
+                    </button>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const dropArea = document.getElementById('drop-area');
+    const fileInput = document.getElementById('file');
+    const fileNameDisplay = document.getElementById('filename-display');
+
+    if (dropArea && fileInput && fileNameDisplay) {
+        // File input change event
+        fileInput.addEventListener('change', function() {
+            if (this.files.length > 0) {
+                fileNameDisplay.textContent = this.files[0].name;
+                fileNameDisplay.classList.add('font-medium');
+            } else {
+                fileNameDisplay.textContent = 'No file selected';
+                fileNameDisplay.classList.remove('font-medium');
+            }
+        });
+
+        // Drag and drop events
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropArea.addEventListener(eventName, highlight, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, unhighlight, false);
+        });
+
+        function highlight() {
+            dropArea.classList.add('border-primary-500', 'bg-primary-50');
+        }
+
+        function unhighlight() {
+            dropArea.classList.remove('border-primary-500', 'bg-primary-50');
+        }
+
+        dropArea.addEventListener('drop', handleDrop, false);
+    }
+});
+</script>
+{% endblock %}

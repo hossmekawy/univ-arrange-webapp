@@ -1,0 +1,95 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="fade-in">
+    <div class="bg-white shadow-sm rounded-lg overflow-hidden border border-gray-200">
+        <div class="bg-primary-50 p-6 border-b border-primary-100">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center">
+                <div class="mb-4 md:mb-0">
+                    <h1 class="text-2xl font-bold text-gray-800">Add New Course</h1>
+                    <p class="text-gray-600">Create a new course to organize your materials</p>
+                </div>
+                <a href="/" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg transition flex items-center">
+                    <i class="fas fa-arrow-left mr-2"></i> Back to Dashboard
+                </a>
+            </div>
+        </div>
+
+        <div class="p-6">
+            <form action="/courses" method="post" class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="course_name" class="block text-gray-700 font-medium mb-2">Course Name</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-book text-gray-400"></i>
+                            </div>
+                            <input type="text" id="course_name" name="course_name" required
+                                   class="pl-10 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                                   placeholder="e.g. Introduction to Computer Science">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="course_code" class="block text-gray-700 font-medium mb-2">Course Code</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-hashtag text-gray-400"></i>
+                            </div>
+                            <input type="text" id="course_code" name="course_code" required
+                                   class="pl-10 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                                   placeholder="e.g. CS101">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-end space-x-2">
+                    <a href="/" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg transition">
+                        Cancel
+                    </a>
+                    <button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white px-6 py-2 rounded-lg transition flex items-center">
+                        <i class="fas fa-plus mr-2"></i> Create Course
+                    </button>
+                </div>
+            </form>
+
+            <div class="mt-8 border-t border-gray-200 pt-8">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-xl font-semibold text-gray-800">Course Creation Tips</h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-blue-50 p-4 rounded-lg">
+                        <div class="flex items-center mb-3">
+                            <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-500 mr-3">
+                                <i class="fas fa-lightbulb"></i>
+                            </div>
+                            <h3 class="font-medium text-gray-800">Naming Convention</h3>
+                        </div>
+                        <p class="text-gray-600 text-sm">Use clear, descriptive names for your courses to easily identify them later.</p>
+                    </div>
+
+                    <div class="bg-green-50 p-4 rounded-lg">
+                        <div class="flex items-center mb-3">
+                            <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center text-green-500 mr-3">
+                                <i class="fas fa-code"></i>
+                            </div>
+                            <h3 class="font-medium text-gray-800">Course Code Format</h3>
+                        </div>
+                        <p class="text-gray-600 text-sm">Use standard department codes followed by course numbers (e.g., CS101, MATH201).</p>
+                    </div>
+
+                    <div class="bg-purple-50 p-4 rounded-lg">
+                        <div class="flex items-center mb-3">
+                            <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center text-purple-500 mr-3">
+                                <i class="fas fa-folder-open"></i>
+                            </div>
+                            <h3 class="font-medium text-gray-800">Organization</h3>
+                        </div>
+                        <p class="text-gray-600 text-sm">Create separate courses for different subjects or semesters for better organization.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
